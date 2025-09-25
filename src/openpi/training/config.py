@@ -1064,10 +1064,23 @@ _CONFIGS = [
     #
     *roboarena_config.get_roboarena_configs(),
     TrainConfig(
+        name="pi0_bridge",
+        model=pi0_config.Pi0Config(),
+        data=LeRobotBridgeDataConfig(
+            repo_id="IPEC-COMMUNITY/bridge_orig_lerobot",
+            base_config=DataConfig(
+                prompt_from_task=True,
+            ),
+        ),
+        pytorch_weight_path="weights/openpi/openpi0-bridge-torch",
+        num_train_steps=30_000,
+        num_workers=8,
+    ),
+    TrainConfig(
         name="pi0_bridge_low_mem_finetune",
         model=pi0_config.Pi0Config(paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"),
         data=LeRobotBridgeDataConfig(
-            repo_id="local/bridge_lerobot",
+            repo_id="IPEC-COMMUNITY/bridge_orig_lerobot",
             base_config=DataConfig(
                 prompt_from_task=True,
             ),
@@ -1081,10 +1094,23 @@ _CONFIGS = [
         num_workers=8,
     ),
     TrainConfig(
+        name="pi0_fractal",
+        model=pi0_config.Pi0Config(),
+        data=LeRobotFractalDataConfig(
+            repo_id="IPEC-COMMUNITY/fractal20220817_data_lerobot",
+            base_config=DataConfig(
+                prompt_from_task=True,
+            ),
+        ),
+        pytorch_weight_path="weights/openpi/openpi0-fractal-torch",
+        num_train_steps=30_000,
+        num_workers=8,
+    ),
+    TrainConfig(
         name="pi0_fractal_lora",
         model=pi0_config.Pi0Config(paligemma_variant="gemma_2b_lora", action_expert_variant="gemma_300m_lora"),
         data=LeRobotFractalDataConfig(
-            repo_id="local/fractal_lerobot",
+            repo_id="IPEC-COMMUNITY/fractal20220817_data_lerobot",
             base_config=DataConfig(
                 prompt_from_task=True,
             ),
