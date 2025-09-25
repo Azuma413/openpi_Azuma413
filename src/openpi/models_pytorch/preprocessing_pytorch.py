@@ -36,7 +36,6 @@ def preprocess_observation_pytorch(
     out_images = {}
     for key in image_keys:
         image = observation.images[key]
-
         # TODO: This is a hack to handle both [B, C, H, W] and [B, H, W, C] formats
         # Handle both [B, C, H, W] and [B, H, W, C] formats
         is_channels_first = image.shape[1] == 3  # Check if channels are in dimension 1
@@ -46,7 +45,7 @@ def preprocess_observation_pytorch(
             image = image.permute(0, 2, 3, 1)
 
         if image.shape[1:3] != image_resolution:
-            logger.info(f"Resizing image {key} from {image.shape[1:3]} to {image_resolution}")
+            # logger.info(f"Resizing image {key} from {image.shape[1:3]} to {image_resolution}")
             image = image_tools.resize_with_pad_torch(image, *image_resolution)
 
         if train:
@@ -69,6 +68,7 @@ def preprocess_observation_pytorch(
                     # Use tensor operations instead of .item() for torch.compile compatibility
                     start_h = torch.randint(0, max_h + 1, (1,), device=image.device)
                     start_w = torch.randint(0, max_w + 1, (1,), device=image.device)
+                    # print(f"image: {image.shape}, start h: {start_h}, start w: {start_w}")
                     image = image[:, start_h : start_h + crop_height, start_w : start_w + crop_width, :]
 
                 # Resize back to original size
