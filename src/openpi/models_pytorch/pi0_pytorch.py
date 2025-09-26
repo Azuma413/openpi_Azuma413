@@ -372,15 +372,11 @@ class PI0Pytorch(nn.Module):
 
         return F.mse_loss(u_t, v_t, reduction="none")
 
-    def get_velocity_and_embedding(self, observation, actions, noise=None, time=None) -> tuple[Tensor, Tensor, Tensor]:
+    def get_velocity_and_embedding(self, observation, actions, time=None) -> tuple[Tensor, Tensor, Tensor]:
         images, img_masks, lang_tokens, lang_masks, state = self._preprocess_observation(observation, train=True)
-        if noise is None:
-            noise = self.sample_noise(actions.shape, actions.device)
         if time is None:
             time = self.sample_time(actions.shape[0], actions.device)
-        time_expanded = time[:, None, None]
-        x_t = time_expanded * noise + (1 - time_expanded) * actions
-        u_t = noise - actions
+        x_t = actions
         prefix_embs, prefix_pad_masks, prefix_att_masks = self.embed_prefix(images, img_masks, lang_tokens, lang_masks)
         suffix_embs, suffix_pad_masks, suffix_att_masks, adarms_cond = self.embed_suffix(state, x_t, time)
         time_emb = create_sinusoidal_pos_embedding(
